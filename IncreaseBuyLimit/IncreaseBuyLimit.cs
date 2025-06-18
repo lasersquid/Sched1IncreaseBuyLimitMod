@@ -193,7 +193,7 @@ namespace IncreaseBuyLimit
             __instance.ItemPriceLabel.text = MoneyManager.FormatAmount(__instance.MatchingListing.Price, false, false);
 
             Action<string> onSubmitAction = (string value) => CallMethod(typeof(ListingEntry), "OnQuantityInputSubmitted", __instance, [value]);
-            Action<string> onEndEditAction = (string value) => CallMethod(typeof(ListingEntry), "ValidateInput", __instance, [value]);
+            Action<string> onEndEditAction = (string value) => CallMethod(typeof(ListingEntry), "ValidateInput", __instance, []);
             Action incrementAction = () => CallMethod(typeof(ListingEntry), "ChangeQuantity", __instance, [1]);
             Action decrementAction = () => CallMethod(typeof(ListingEntry), "ChangeQuantity", __instance, [-1]);
             __instance.QuantityInput.onSubmit.AddListener(ToUnityAction<string>(onSubmitAction));
