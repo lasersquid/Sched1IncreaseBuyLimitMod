@@ -1,7 +1,7 @@
 ﻿using MelonLoader;
 
 
-[assembly: MelonInfo(typeof(IncreaseBuyLimit.IncreaseBuyLimitMod), "IncreaseBuyLimit", "1.0.0", "lasersquid", null)]
+[assembly: MelonInfo(typeof(IncreaseBuyLimit.IncreaseBuyLimitMod), "IncreaseBuyLimit", "1.0.1", "lasersquid", null)]
 [assembly: MelonGame("TVGS", "Schedule I")]
 
 namespace IncreaseBuyLimit
