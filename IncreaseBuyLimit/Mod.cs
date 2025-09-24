@@ -1,7 +1,7 @@
 ﻿using MelonLoader;
 
 
-[assembly: MelonInfo(typeof(IncreaseBuyLimit.IncreaseBuyLimitMod), "IncreaseBuyLimit", "1.0.1", "lasersquid", null)]
+[assembly: MelonInfo(typeof(IncreaseBuyLimit.IncreaseBuyLimitMod), "IncreaseBuyLimit", "1.0.2", "lasersquid", null)]
 [assembly: MelonGame("TVGS", "Schedule I")]
 
 namespace IncreaseBuyLimit
@@ -17,3 +17,7 @@ namespace IncreaseBuyLimit
 	}
 }
 
+
+
+// bugs:
+//	- buy limit still 999 in supplier meeting dialogue

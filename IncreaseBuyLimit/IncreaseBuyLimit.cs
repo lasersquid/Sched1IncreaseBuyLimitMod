@@ -4,6 +4,7 @@ using UnityEngine.Events;
 
 
 
+
 #if MONO_BUILD
 using ScheduleOne.Money;
 using ScheduleOne.UI.Phone.Delivery;
@@ -157,29 +158,71 @@ namespace IncreaseBuyLimit
             }
         }
 
+        // Call to ShopAmountSelector::Open was inlined
+        [HarmonyPatch(typeof(ShopInterface), "OpenAmountSelector")]
+        [HarmonyPrefix]
+        public static bool OpenAmountSelectorPrefix(ShopInterface __instance, ListingUI listing)
+        {
+            if (!listing.Listing.Item.IsPurchasable)
+            {
+                return false;
+            }
+            if (!listing.CanAddToCart())
+            {
+                return false;
+            }
+            SetField(typeof(ShopInterface), "selectedListing", __instance, listing);
+            __instance.AmountSelector.transform.position = listing.TopDropdownAnchor.position;
+            SetField(typeof(ShopInterface), "dropdownMouseUp", __instance, false);
+            __instance.AmountSelector.Open();
+            return false;
+        }
+
 
         // make cart entry red X actually remove the entire stack
-        [HarmonyPatch(typeof(CartEntry), "Initialize")]
+#if MONO_BUILD
+        [HarmonyPatch(typeof(ScheduleOne.UI.Shop.CartEntry), "Initialize")]
         [HarmonyPrefix]
-        public static bool CartEntryInitializePrefix(CartEntry __instance, Cart cart, ShopListing listing, int quantity)
+        public static bool CartEntryInitializePrefix(ScheduleOne.UI.Shop.CartEntry __instance, Cart cart, ShopListing listing, int quantity)
         {
-            SetProperty(typeof(CartEntry), "Cart", __instance, cart);
-            SetProperty(typeof(CartEntry), "Listing", __instance, listing);
-            SetProperty(typeof(CartEntry), "Quantity", __instance, quantity);
+            SetProperty(typeof(ScheduleOne.UI.Shop.CartEntry), "Cart", __instance, cart);
+            SetProperty(typeof(ScheduleOne.UI.Shop.CartEntry), "Listing", __instance, listing);
+            SetProperty(typeof(ScheduleOne.UI.Shop.CartEntry), "Quantity", __instance, quantity);
 
-            Action incrementAction = () => CallMethod(typeof(CartEntry), "ChangeAmount", __instance, [1]);
-            Action decrementAction = () => CallMethod(typeof(CartEntry), "ChangeAmount", __instance, [-1]);
-            Action removeAction = () => CallMethod(typeof(CartEntry), "ChangeAmount", __instance, [-999999]);
+            Action incrementAction = () => CallMethod(typeof(ScheduleOne.UI.Shop.CartEntry), "ChangeAmount", __instance, [1]);
+            Action decrementAction = () => CallMethod(typeof(ScheduleOne.UI.Shop.CartEntry), "ChangeAmount", __instance, [-1]);
+            Action removeAction = () => CallMethod(typeof(ScheduleOne.UI.Shop.CartEntry), "ChangeAmount", __instance, [-999999]);
             __instance.IncrementButton.onClick.AddListener(ToUnityAction(incrementAction));
             __instance.DecrementButton.onClick.AddListener(ToUnityAction(decrementAction));
             __instance.RemoveButton.onClick.AddListener(ToUnityAction(removeAction));
 
-            CallMethod(typeof(CartEntry), "UpdateTitle", __instance, []);
-            CallMethod(typeof(CartEntry), "UpdatePrice", __instance, []);
+            CallMethod(typeof(ScheduleOne.UI.Shop.CartEntry), "UpdateTitle", __instance, []);
+            CallMethod(typeof(ScheduleOne.UI.Shop.CartEntry), "UpdatePrice", __instance, []);
 
             return false;
         }
+#else
+        [HarmonyPatch(typeof(Il2CppScheduleOne.UI.Shop.CartEntry), "Initialize")]
+        [HarmonyPrefix]
+        public static bool CartEntryInitializePrefix(Il2CppScheduleOne.UI.Shop.CartEntry __instance, Cart cart, ShopListing listing, int quantity)
+        {
+            SetProperty(typeof(Il2CppScheduleOne.UI.Shop.CartEntry), "Cart", __instance, cart);
+            SetProperty(typeof(Il2CppScheduleOne.UI.Shop.CartEntry), "Listing", __instance, listing);
+            SetProperty(typeof(Il2CppScheduleOne.UI.Shop.CartEntry), "Quantity", __instance, quantity);
 
+            Action incrementAction = () => CallMethod(typeof(Il2CppScheduleOne.UI.Shop.CartEntry), "ChangeAmount", __instance, [1]);
+            Action decrementAction = () => CallMethod(typeof(Il2CppScheduleOne.UI.Shop.CartEntry), "ChangeAmount", __instance, [-1]);
+            Action removeAction = () => CallMethod(typeof(Il2CppScheduleOne.UI.Shop.CartEntry), "ChangeAmount", __instance, [-999999]);
+            __instance.IncrementButton.onClick.AddListener(ToUnityAction(incrementAction));
+            __instance.DecrementButton.onClick.AddListener(ToUnityAction(decrementAction));
+            __instance.RemoveButton.onClick.AddListener(ToUnityAction(removeAction));
+
+            CallMethod(typeof(Il2CppScheduleOne.UI.Shop.CartEntry), "UpdateTitle", __instance, []);
+            CallMethod(typeof(Il2CppScheduleOne.UI.Shop.CartEntry), "UpdatePrice", __instance, []);
+
+            return false;
+        }
+#endif
 
         // Enable user to input more than 999 in delivery app
         // call to OnQuantityInputSubmitted was inlined as well
