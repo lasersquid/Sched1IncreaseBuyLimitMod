@@ -1,4 +1,5 @@
-﻿using MelonLoader;
+﻿using HarmonyLib;
+using MelonLoader;
 
 
 [assembly: MelonInfo(typeof(IncreaseBuyLimit.IncreaseBuyLimitMod), "IncreaseBuyLimit", "1.0.3", "lasersquid", null)]
