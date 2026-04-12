@@ -171,7 +171,7 @@ namespace IncreaseBuyLimit
             }
             SetField(typeof(ShopInterface), "selectedListing", __instance, listing);
             __instance.AmountSelector.transform.position = listing.TopDropdownAnchor.position;
-            SetField(typeof(ShopInterface), "dropdownMouseUp", __instance, false);
+            SetField(typeof(ShopInterface), "amountSelectorMouseUp", __instance, false);
             __instance.AmountSelector.Open();
             return false;
         }
